@@ -14,7 +14,7 @@ class Surgeon(models.Model):
                                  message="Phone number must be entered in this format : 503456789, +971503456789 or "
                                          "62345678   ")
     surgeon_phone_number = models.CharField(validators=[phone_regex], max_length=14, blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         constraints = [
@@ -33,7 +33,7 @@ class Hospital(models.Model):
                                  message="Phone number must be entered in this format : 503456789, +971503456789 or "
                                          "62345678   ")
     hospital_phone_number = models.CharField(validators=[phone_regex], max_length=14, blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         constraints = [
@@ -56,7 +56,7 @@ class Patient(models.Model):
                                          "62345678   ")
     patient_phone_number = models.CharField(validators=[phone_regex], max_length=14, blank=True, null=True)
     patient_date_of_birth = models.DateTimeField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     number_validator = RegexValidator(regex=r'^[0-9]{1,20}', message='Insert less than 20 digits')
     file_number = models.CharField(max_length=20, validators=[number_validator])
@@ -69,7 +69,7 @@ class Patient(models.Model):
     def __str__(self):
         return + self.patient_name + ' ,  ' + self.hospital.hospital_name
 
-    def get_age(self):  # to view the patient age as part of the patient profile
+    def get_age_now(self):  # to view the patient age as part of the patient profile
         today = date.today()
         born = self.patient_date_of_birth
         return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
@@ -88,6 +88,7 @@ class Operation(models.Model):
     operation_date = models.DateTimeField()
     post_operation_clinical = models.CharField(max_length=500, blank=True, null=True)
     discharge_date = models.DateTimeField(blank=True, null=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.operation_name + ',  patient : ' + self.patient.patient_name + ', in :  ' + self.patient.hospital.hospital_name
@@ -139,6 +140,7 @@ class Test(models.Model):
                              validators=[MaxValueValidator(1000.0), MinValueValidator(0.0)])
     t4 = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=5,
                              validators=[MaxValueValidator(1000.0), MinValueValidator(0.0)])
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         # To ensure each operation can have only one pre operation Test and one post operation Test
@@ -150,12 +152,15 @@ class Test(models.Model):
 class Drug(models.Model):
     drug_name = models.CharField(max_length=100)
     drug_description = models.CharField(max_length=500)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['drug_name'], name='unique_drug_name'),
         ]
+
+    def __str__(self):
+        return self.drug_name
 
 
 class Prescription(models.Model):
@@ -171,6 +176,12 @@ class Prescription(models.Model):
     order = models.CharField(max_length=4, choices=TIME_CHOICES)
     operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
     drug = models.ForeignKey(Drug, on_delete=models.CASCADE)
+    dose = models.CharField(max_length=50)
+    duration = models.CharField(max_length=50)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.drug) + ', '+self.dose + ' , for ' + self.duration
 
     class Meta:
         constraints = [

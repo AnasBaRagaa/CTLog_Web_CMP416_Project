@@ -9,8 +9,8 @@
 <body>
 {%  block navbar %}
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-  <h3 class="navbar-brand" href="#">CT Helper</h3>
-
+  <a class="navbar-brand" href="{% url 'ct_helper:index' %}" ></aclass><h3>CT Helper</h3></a>
+>
   <ul class="navbar-nav">
     <li class="nav-item">
       <a class="nav-link" href="#">Hospitals</a>
@@ -27,9 +27,32 @@
       <li class="nav-item">
       <a class="nav-link" href="#">Drugs</a>
     </li>
+      {% if user.is_authenticated%}
+           <li class="nav-item">
+      <a class="nav-link" href="#">Welcome {{ user }}</a>
+    </li>
+      <li class="nav-item">
+      <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+    </li>
+      {% else %}
+       <li class="nav-item">
+      <a class="nav-link" href="{% url 'login' %}">Login</a>
+    </li>
+      {% endif %}
+
+
   </ul>
 </nav>
+    {% endblock %}
+{% block message %}
+    {% if messages %}
+     {% for message in messages %}
+         <div class="text-center alert alert-{{ message.tags }}">
+             {{ message|safe }}
+         </div>
+     {% endfor %}
+ {% endif %}
 {% endblock %}
-<div>{% block content %} {% endblock %}</div>
+<div class="container">{% block content %} {% endblock %}</div>
 </body>
 </html>

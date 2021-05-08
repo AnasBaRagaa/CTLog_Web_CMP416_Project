@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'ct_helper.apps.CtHelperConfig',  # my application
     'django_countries',  # open source package from : https://pypi.org/project/django-countries/
     'widget_tweaks',  # open source package : https://pypi.org/project/django-widget-tweaks/
+    'crispy_forms', # open source package from : https://pypi.org/project/django-crispy-forms/#description
 ]
 
 MIDDLEWARE = [
@@ -104,8 +105,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-TIME_ZONE = 'UTC'
+LOGIN_URL='/login/'
+
+TIME_ZONE = 'Asia/Dubai'
 
 USE_I18N = True
 

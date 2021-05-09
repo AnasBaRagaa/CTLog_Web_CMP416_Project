@@ -1,15 +1,22 @@
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy, reverse
 from django.views import generic
 
-from ct_helper.forms import UserForm
+from ct_helper.forms import UserForm, HospitalForm, SurgeonForm
+from .models import Hospital, Patient, Surgeon, Drug, Prescription, Test, Operation
+
 
 def index(request):
-    return render(request,template_name='ct_helper/index.html')
+    return render(request, template_name='ct_helper/index.html')
+
+def profile(request):
+    return redirect('ct_helper:index')
+
+
 def register(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -31,6 +38,24 @@ def logout_user(request):
 
 # Subclassing the generic classes to include ownership check and assignment of the records and enforce login
 
+class BaseListView(LoginRequiredMixin, generic.ListView):
+    context_object_name = 'objects'
+
+    # filter based on the current user
+    def get_queryset(self, *args, **kwargs):
+        qs = super(BaseListView, self).get_queryset(*args, **kwargs)
+        qs = qs.filter(owner=self.request.user)
+        return qs
+
+
+class BaseDetailView(LoginRequiredMixin, generic.DetailView):
+    def get_object(self, queryset=None):
+        obj = super(BaseDeleteView, self).get_object()
+        if obj.owner != self.request.user:
+            raise Http404  # prevent users from deleting records they do not own
+        return obj
+
+
 class BaseDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_message = "Record was deleted successfully."
     template_name = 'ct_helper/delete.html'  # Generic template
@@ -48,7 +73,7 @@ class BaseDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 class BaseUpdateView(LoginRequiredMixin, generic.UpdateView):
     success_message = "Record was updated successfully."
-    template_name = 'ct_helper/update.html'  # Generic template
+    template_name = 'ct_helper/update.html'  # Generic template for insert and update
 
     def get_object(self, queryset=None):
         obj = super(BaseUpdateView, self).get_object()
@@ -60,10 +85,16 @@ class BaseUpdateView(LoginRequiredMixin, generic.UpdateView):
         messages.success(self.request, self.success_message)
         return super(BaseUpdateView, self).form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super(BaseUpdateView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
+
 
 class BaseCreateView(LoginRequiredMixin, generic.CreateView):
     success_message = "Record was added successfully."
-    template_name = 'ct_helper/update.html'  # Generic template
+    template_name = 'ct_helper/update.html'  # Generic template for insert and update
+
     # send  current user to the form
     def get_form_kwargs(self):
         kwargs = super(BaseCreateView, self).get_form_kwargs()
@@ -76,3 +107,66 @@ class BaseCreateView(LoginRequiredMixin, generic.CreateView):
         form.instance.owner = user
         messages.success(self.request, self.success_message)
         return super(BaseCreateView, self).form_valid(form)
+
+
+# Hospital views:
+class HospitalCreateView(BaseCreateView):
+    model = Hospital
+    success_message = 'New hospital added successfully'
+    success_url = reverse_lazy('ct_helper:hospitals')
+    form_class = HospitalForm
+
+
+class HospitalUpdateView(BaseUpdateView):
+    model = Hospital
+    success_message = 'Hospital was updated successfully'
+    success_url = reverse_lazy('ct_helper:hospitals')
+    form_class = HospitalForm
+
+
+class HospitalListView(BaseListView):
+    model = Hospital
+    template_name = "ct_helper/hospital/list.html"
+
+
+class HospitalDeleteView(BaseDeleteView):
+    model = Hospital
+    success_message = "Hospital was deleted successfully"
+    success_url = reverse_lazy('ct_helper:hospitals')
+
+
+# Patient views:
+
+
+# Surgeon views:
+class SurgeonCreateView(BaseCreateView):
+    model = Surgeon
+    success_message = 'New surgeon added successfully'
+    success_url = reverse_lazy('ct_helper:surgeons')
+    form_class = SurgeonForm
+
+
+class SurgeonUpdateView(BaseUpdateView):
+    model = Surgeon
+    success_message = 'Surgeon updated successfully'
+    success_url = reverse_lazy('ct_helper:surgeons')
+    form_class = SurgeonForm
+
+
+class SurgeonListView(BaseListView):
+    model = Surgeon
+    template_name = "ct_helper/surgeon/list.html"
+
+
+class SurgeonDeleteView(BaseDeleteView):
+    model = Surgeon
+    success_message = "Surgeon was deleted successfully"
+    success_url = reverse_lazy('ct_helper:surgeons')
+
+# Operation views:
+
+# Drug views:
+
+# Test views:
+
+# Prescription views:

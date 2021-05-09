@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +30,16 @@ ALLOWED_HOSTS = []
 # Anas Ba Ragaa _ b00075797
 # Application definition I put the installed packages through pip inside the project folder instead of
 # venv\Lib\site-packages because Python could not find them
+""" 
+Note:
+I extracted the packages that I installed from pip out of the venv to the project folder so they will run I 
+send the project without venv 
+In case they do not work:
+$ pip install django-countries
+$ pip install django-crispy-forms
+$ pip install django-widget-tweaks
 
+"""
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

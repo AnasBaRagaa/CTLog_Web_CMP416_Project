@@ -4,6 +4,8 @@ from django import forms
 from django.forms import ModelChoiceField
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import Hospital ,Patient,Surgeon,Drug,Prescription,Test,Operation
+
 
 class UserForm(UserCreationForm):
     first_name = forms.CharField(max_length=50, required=True)
@@ -21,3 +23,27 @@ class UserForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class BaseForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        if 'user' in kwargs.keys():
+            user = kwargs.pop('user')
+            self.user = user
+        else:
+            self.user = None
+        super(BaseForm, self).__init__(*args, **kwargs)
+
+
+
+
+class SurgeonForm(BaseForm):
+    class Meta:
+        model = Surgeon
+        exclude = ['owner']
+
+class HospitalForm(BaseForm):
+
+    class Meta:
+        model = Hospital
+        exclude = ['owner']

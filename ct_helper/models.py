@@ -1,18 +1,36 @@
 # Anas Ba Ragaa _ b00075797
+
+"""
+Superuser :
+    username: user
+    pass: x
+
+Test users:
+username= testuser1
+pass = xxxx
+
+username= testuser2
+pass = xxxx
+
+username= testuser3
+pass = xxxx
+"""
 from django.core.validators import RegexValidator, MaxValueValidator, MinValueValidator
 from django.db import models
 from django_countries.fields import CountryField
 from django.contrib.auth.models import User
 from datetime import date
 
+phone_regex = RegexValidator(regex=r'^(00|[+]){0,1}(971){0,1}[1-9]{1}[0-9]{7,8}$',
+                             message="Phone number must be entered in this format : 503456789, +971503456789 or "
+                                     "62345678   ")
+
 
 class Surgeon(models.Model):
     surgeon_name = models.CharField(max_length=80)
     surgeon_address = models.CharField(max_length=200)
     surgeon_Email = models.EmailField(max_length=50)
-    phone_regex = RegexValidator(regex=r'^(00|[+]){0,1}(971){0,1}[1-9]{1}[0-9]{7,8}$',
-                                 message="Phone number must be entered in this format : 503456789, +971503456789 or "
-                                         "62345678   ")
+
     surgeon_phone_number = models.CharField(validators=[phone_regex], max_length=14, blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -29,9 +47,7 @@ class Hospital(models.Model):
     hospital_name = models.CharField(max_length=100)
     hospital_address = models.CharField(max_length=200)
     hospital_website = models.URLField(max_length=200, blank=True, null=True)
-    phone_regex = RegexValidator(regex=r'^(00|[+]){0,1}(971){0,1}[1-9]{1}[0-9]{7,8}$',
-                                 message="Phone number must be entered in this format : 503456789, +971503456789 or "
-                                         "62345678   ")
+
     hospital_phone_number = models.CharField(validators=[phone_regex], max_length=14, blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -51,9 +67,7 @@ class Patient(models.Model):
     patient_address = models.CharField(max_length=200)
     patient_Email = models.EmailField(max_length=50)
     patient_Nationality = CountryField()
-    phone_regex = RegexValidator(regex=r'^(00|[+]){0,1}(971){0,1}[1-9]{1}[0-9]{7,8}$',
-                                 message="Phone number must be entered in this format : 503456789, +971503456789 or "
-                                         "62345678   ")
+
     patient_phone_number = models.CharField(validators=[phone_regex], max_length=14, blank=True, null=True)
     patient_date_of_birth = models.DateTimeField()
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -181,7 +195,7 @@ class Prescription(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.drug) + ', '+self.dose + ' , for ' + self.duration
+        return str(self.drug) + ', ' + self.dose + ' , for ' + self.duration
 
     class Meta:
         constraints = [

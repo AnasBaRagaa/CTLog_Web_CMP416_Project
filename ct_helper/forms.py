@@ -1,10 +1,11 @@
 # Anas Ba Ragaa _ b00075797
+from datetime import datetime
 
 from django import forms
-from django.forms import ModelChoiceField
+from django.forms import ModelChoiceField, DateInput
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Hospital ,Patient,Surgeon,Drug,Prescription,Test,Operation
+from .models import Hospital, Patient, Surgeon, Drug, Prescription, Test, Operation
 
 
 class UserForm(UserCreationForm):
@@ -35,15 +36,26 @@ class BaseForm(forms.ModelForm):
         super(BaseForm, self).__init__(*args, **kwargs)
 
 
-
-
 class SurgeonForm(BaseForm):
     class Meta:
         model = Surgeon
         exclude = ['owner']
 
-class HospitalForm(BaseForm):
 
+class HospitalForm(BaseForm):
     class Meta:
         model = Hospital
         exclude = ['owner']
+
+
+class PatientForm(BaseForm):
+    def __init__(self, *args, **kwargs):
+        super(BaseForm, self).__init__(*args, **kwargs)
+        self.fields['hospital'] = ModelChoiceField(queryset=Hospital.objects.filter(owner=self.user))
+
+    class Meta:
+        model = Patient
+        exclude = ['owner']
+        widgets = {
+            'patient_date_of_birth': DateInput(attrs={'max': datetime.now().strftime("%Y-%m-%d")})
+        }

@@ -15,11 +15,11 @@ urlpatterns = [
          name='hospitals_delete'),
     #
     # # patients urls
-    # path('patients/', views.DetailView.as_view(), name='patients'),
-    # path('patients/add/', views.DetailView.as_view(), name='patients_add'),
-    # path('patients/update/<int:pk>/', views.DetailView.as_view(), name='patients_update'),
-    # path('patients/delete/<int:pk>/', views.DetailView.as_view(), name='patients_delete'),
-    #
+    path('patients/', views.PatientListView.as_view(), name='patients'),
+    path('patients/add/', views.PatientCreateView.as_view(extra_context={'title': 'Add Patient'}), name='patients_add'),
+    path('patients/update/<int:pk>/', views.PatientUpdateView.as_view(extra_context={'title': 'Update Patient'}), name='patients_update'),
+    path('patients/delete/<int:pk>/', views.PatientDeleteView.as_view(extra_context={'title': 'Delete Patient'}), name='patients_delete'),
+
     # # surgeons urls
     path('surgeons/', views.SurgeonListView.as_view(), name='surgeons'),
     path('surgeons/add/', views.SurgeonCreateView.as_view(extra_context={'title': 'Add Surgeon'}), name='surgeons_add'),

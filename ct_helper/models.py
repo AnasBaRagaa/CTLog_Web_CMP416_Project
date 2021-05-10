@@ -25,6 +25,12 @@ phone_regex = RegexValidator(regex=r'^(00|[+]){0,1}(971){0,1}[1-9]{1}[0-9]{7,8}$
                              message="Phone number must be entered in this format : 503456789, +971503456789 or "
                                      "62345678   ")
 
+GENDER_CHOICES = (('M', 'Male'), ('F', 'Female'))
+
+TIME_CHOICES = (('PRE', 'Pre operation'), ('POST', 'Post operation'))
+
+TEST_CHOICES = (('P', 'Positive'), ('N', 'Negative'))
+
 
 class Surgeon(models.Model):
     surgeon_name = models.CharField(max_length=80)
@@ -62,7 +68,7 @@ class Hospital(models.Model):
 
 class Patient(models.Model):
     patient_name = models.CharField(max_length=80)
-    GENDER_CHOICES = (('M', 'Male'), ('F', 'Female'))
+
     patient_gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     patient_address = models.CharField(max_length=200)
     patient_Email = models.EmailField(max_length=50)
@@ -114,10 +120,8 @@ class Operation(models.Model):
 
 
 class Test(models.Model):
-    TIME_CHOICES = (('PRE', 'Pre operation'), ('POST', 'Post operation'))
     order = models.CharField(max_length=4, choices=TIME_CHOICES)
     operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
-    TEST_CHOICES = (('P', 'Positive'), ('N', 'Negative'))
     hIV = models.CharField(max_length=1, choices=TEST_CHOICES, null=True, blank=True)
     hBV = models.CharField(max_length=1, choices=TEST_CHOICES, null=True, blank=True)
     hCV = models.CharField(max_length=1, choices=TEST_CHOICES, null=True, blank=True)
@@ -186,7 +190,6 @@ class Prescription(models.Model):
     One Drug can be assigned to different prescriptions
 
     """
-    TIME_CHOICES = (('PRE', 'Pre operation'), ('POST', 'Post operation'))
     order = models.CharField(max_length=4, choices=TIME_CHOICES)
     operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
     drug = models.ForeignKey(Drug, on_delete=models.CASCADE)

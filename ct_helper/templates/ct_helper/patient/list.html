@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Surgeons{% endblock %}
+
+{% block content %}
+
+    <h3>Patients</h3>
+    <div>
+    <a class="btn btn-primary btn-lg" role="button" href="{% url 'ct_helper:surgeons_add' %}"><h3> Add a Patient</h3></a>
+    </div>
+    {% if objects %}
+        <div>
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Surgeon name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone number</th>
+                <th scope="col">Address</th>
+                <th scope="col">Actions </th>
+            </tr>
+            {% for p in objects %}
+                <tr>
+                    <th scope="row">{{ p. }}</th>
+                    <td>{{ s.surgeon_Email }}</td>
+                    <td>{{s.surgeon_phone_number}}</td>
+                    <td>{{ s.surgeon_address }}</td>
+                    <td>
+                        <a class="btn btn-info" href="{% url 'ct_helper:surgeons_update' pk=s.id %}" role="button">Update</a>
+                        <a class="btn btn-danger" href="{% url 'ct_helper:surgeons_update' pk=s.id %}" role="button">Delete</a>
+
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        </div>
+        {% else %}
+        <div>
+        <p><h3>No Surgeons yet...</h3></p>
+        </div>
+    {% endif %}
+{% endblock %}

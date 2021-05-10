@@ -6,12 +6,13 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 
-from ct_helper.forms import UserForm, HospitalForm, SurgeonForm
+from ct_helper.forms import UserForm, HospitalForm, SurgeonForm, PatientForm
 from .models import Hospital, Patient, Surgeon, Drug, Prescription, Test, Operation
 
 
 def index(request):
     return render(request, template_name='ct_helper/index.html')
+
 
 def profile(request):
     return redirect('ct_helper:index')
@@ -95,6 +96,12 @@ class BaseCreateView(LoginRequiredMixin, generic.CreateView):
     success_message = "Record was added successfully."
     template_name = 'ct_helper/update.html'  # Generic template for insert and update
 
+    def get_success_url(self):
+        if (self.request.GET.get('next', '') != ''):
+            # redirect back to the next page if this request was redirected from another page and has a next parameter
+            return self.request.GET.get('next', '')
+        return super(BaseCreateView,self).get_success_url()
+
     # send  current user to the form
     def get_form_kwargs(self):
         kwargs = super(BaseCreateView, self).get_form_kwargs()
@@ -135,9 +142,34 @@ class HospitalDeleteView(BaseDeleteView):
     success_url = reverse_lazy('ct_helper:hospitals')
 
 
+# ---------------------------------------------------
 # Patient views:
+class PatientCreateView(BaseCreateView):
+    model = Patient
+    success_message = 'New patient added successfully'
+    success_url = reverse_lazy('ct_helper:patients')
+    form_class = PatientForm
 
 
+class PatientUpdateView(BaseUpdateView):
+    model = Patient
+    success_message = 'Patient updated successfully'
+    success_url = reverse_lazy('ct_helper:patients')
+    form_class = PatientForm
+
+
+class PatientListView(BaseListView):
+    model = Patient
+    template_name = "ct_helper/patient/list.html"
+
+
+class PatientDeleteView(BaseDeleteView):
+    model = Patient
+    success_message = "Patient was deleted successfully"
+    success_url = reverse_lazy('ct_helper:patients')
+
+
+# ------------------------------------------------------
 # Surgeon views:
 class SurgeonCreateView(BaseCreateView):
     model = Surgeon
@@ -163,10 +195,14 @@ class SurgeonDeleteView(BaseDeleteView):
     success_message = "Surgeon was deleted successfully"
     success_url = reverse_lazy('ct_helper:surgeons')
 
+# ------------------------------------------------------------
 # Operation views:
 
+# -----------------------------------------------------------
 # Drug views:
 
+# -------------------------------------------------------------
 # Test views:
 
+# ------------------------------------------------------------------------
 # Prescription views:

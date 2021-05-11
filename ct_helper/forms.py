@@ -50,12 +50,13 @@ class HospitalForm(BaseForm):
 
 class PatientForm(BaseForm):
     def __init__(self, *args, **kwargs):
-        super(BaseForm, self).__init__(*args, **kwargs)
+        super(PatientForm, self).__init__(*args, **kwargs)
         self.fields['hospital'] = ModelChoiceField(queryset=Hospital.objects.filter(owner=self.user))
-
+       # self.fields['patient_date_of_birth']= forms.DateField(widget=DateInput(attrs={'max': datetime.now().strftime("%Y-%m-%d"), 'type':'date'}))
     class Meta:
         model = Patient
         exclude = ['owner']
         widgets = {
-            'patient_date_of_birth': DateInput(attrs={'max': datetime.now().strftime("%Y-%m-%d")})
+           'patient_date_of_birth': DateInput(attrs={'max': datetime.now().strftime("%Y-%m-%d"), 'type':'date'})
+
         }

@@ -5,39 +5,61 @@
 
 {% block content %}
 
-    <h3>Patients</h3>
-    <div>
-    <a class="btn btn-primary btn-lg" role="button" href="{% url 'ct_helper:surgeons_add' %}"><h3> Add a Patient</h3></a>
-    </div>
+    <div class="row">
+     <div class="col">
+           <h3>Patients</h3>
+
+     </div>
+     <div class="col text-right">
+           <a class="btn btn-primary" role="button" href="{% url 'ct_helper:patients_add' %}"> Add a patient</a>
+
+     </div>
+</div>
+
     {% if objects %}
         <div>
-        <table class="table">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">Surgeon name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Phone number</th>
-                <th scope="col">Address</th>
-                <th scope="col">Actions </th>
-            </tr>
-            {% for p in objects %}
+            <table class="table">
+                <thead class="thead-dark">
                 <tr>
-                    <th scope="row">{{ p. }}</th>
-                    <td>{{ s.surgeon_Email }}</td>
-                    <td>{{s.surgeon_phone_number}}</td>
-                    <td>{{ s.surgeon_address }}</td>
-                    <td>
-                        <a class="btn btn-info" href="{% url 'ct_helper:surgeons_update' pk=s.id %}" role="button">Update</a>
-                        <a class="btn btn-danger" href="{% url 'ct_helper:surgeons_update' pk=s.id %}" role="button">Delete</a>
+                    <th scope="col">Patient name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone number</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">Nationality</th>
+                    <th scope="col">DOB (age)</th>
 
-                    </td>
+
+                    <th scope="col">Hospital</th>
+                    <th scope="col">File</th>
+
+                    <th scope="col">Address</th>
+                    <th scope="col">Actions</th>
                 </tr>
-            {% endfor %}
-        </table>
+                {% for p in objects %}
+                    <tr>
+                        <th scope="row">{{ p.patient_name }}</th>
+                        <td>{{ p.patient_Email }}</td>
+                        <td>{{ p.patient_phone_number }}</td>
+                        <td>{{ p.patient_gender }}</td>
+                        <td>{{ p.patient_Nationality }}</td>
+                        <td>{{ p.patient_date_of_birth }} ({{ p.get_age_now }} )</td>
+                        <td>{{ p.hospital }}</td>
+                        <td>{{ p.file_number }}</td>
+                        <td>{{ p.patient_address }}</td>
+                        <td>
+                            <a class="btn btn-info" href="{% url 'ct_helper:patients_update' pk=p.id %}" role="button">Update</a>
+
+                            <a class="btn btn-danger" href="{% url 'ct_helper:patients_delete' pk=p.id %}" role="button">Delete</a>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
-        {% else %}
+    {% else %}
         <div>
-        <p><h3>No Surgeons yet...</h3></p>
+            <p>
+            <h3>No Patients yet...</h3></p>
         </div>
     {% endif %}
 {% endblock %}

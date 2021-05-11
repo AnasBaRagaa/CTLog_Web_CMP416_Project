@@ -4,10 +4,12 @@
 {% block title %}Update{% endblock %}
 
 {% block content %}
-
+<div class="container">
 <h3> {{ title }}</h3>
+
 <form method="post">{% csrf_token %}
     {{ form|crispy}}
     <input type="submit"  class="btn btn-primary" value="Save">
 </form>
+</div>
 {% endblock %}

@@ -100,7 +100,7 @@ class BaseCreateView(LoginRequiredMixin, generic.CreateView):
         if (self.request.GET.get('next', '') != ''):
             # redirect back to the next page if this request was redirected from another page and has a next parameter
             return self.request.GET.get('next', '')
-        return super(BaseCreateView,self).get_success_url()
+        return super(BaseCreateView, self).get_success_url()
 
     # send  current user to the form
     def get_form_kwargs(self):
@@ -149,6 +149,7 @@ class PatientCreateView(BaseCreateView):
     success_message = 'New patient added successfully'
     success_url = reverse_lazy('ct_helper:patients')
     form_class = PatientForm
+    template_name = 'ct_helper/patient/update.html'
 
 
 class PatientUpdateView(BaseUpdateView):
@@ -156,6 +157,7 @@ class PatientUpdateView(BaseUpdateView):
     success_message = 'Patient updated successfully'
     success_url = reverse_lazy('ct_helper:patients')
     form_class = PatientForm
+    template_name = 'ct_helper/patient/update.html'
 
 
 class PatientListView(BaseListView):

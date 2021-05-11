@@ -30,6 +30,7 @@ GENDER_CHOICES = (('M', 'Male'), ('F', 'Female'))
 TIME_CHOICES = (('PRE', 'Pre operation'), ('POST', 'Post operation'))
 
 TEST_CHOICES = (('P', 'Positive'), ('N', 'Negative'))
+number_validator = RegexValidator(regex=r'^[0-9]{1,20}', message='Insert less than 20 digits')
 
 
 class Surgeon(models.Model):
@@ -78,16 +79,17 @@ class Patient(models.Model):
     patient_date_of_birth = models.DateTimeField()
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
-    number_validator = RegexValidator(regex=r'^[0-9]{1,20}', message='Insert less than 20 digits')
     file_number = models.CharField(max_length=20, validators=[number_validator])
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['patient_name', 'hospital'], name='unique_patient_hospital'),
+            models.UniqueConstraint(fields=['file_number', 'hospital'], name='unique_file-number_hospital'),
+
         ]
 
     def __str__(self):
-        return + self.patient_name + ' ,  ' + self.hospital.hospital_name
+        return  self.patient_name + ' ,  ' + self.hospital.hospital_name
 
     def get_age_now(self):  # to view the patient age as part of the patient profile
         today = date.today()

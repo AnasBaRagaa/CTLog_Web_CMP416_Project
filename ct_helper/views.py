@@ -6,7 +6,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 
-from ct_helper.forms import UserForm, HospitalForm, SurgeonForm, PatientForm, DrugForm, OperationForm
+from ct_helper.forms import UserForm, HospitalForm, SurgeonForm, PatientForm, DrugForm, OperationForm, TestForm, \
+    PrescriptionForm
 from .models import Hospital, Patient, Surgeon, Drug, Prescription, Test, Operation
 
 
@@ -55,7 +56,8 @@ class BaseDetailView(LoginRequiredMixin, generic.DetailView):
     def get_object(self, queryset=None):
         obj = super(BaseDetailView, self).get_object()
         if obj.owner != self.request.user:
-            raise Http404  # prevent users from deleting records they do not own
+            raise Http404(
+                'You do not have permission to access this record')  # prevent users from deleting records they do not own
         return obj
 
 
@@ -66,7 +68,8 @@ class BaseDeleteView(LoginRequiredMixin, generic.DeleteView):
     def get_object(self, queryset=None):
         obj = super(BaseDeleteView, self).get_object()
         if obj.owner != self.request.user:
-            raise Http404  # prevent users from deleting records they do not own
+            raise Http404(
+                'You do not have permission to access this record')  # prevent users from deleting records they do not own
         return obj
 
     def delete(self, request, *args, **kwargs):
@@ -81,7 +84,8 @@ class BaseUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_object(self, queryset=None):
         obj = super(BaseUpdateView, self).get_object()
         if obj.owner != self.request.user:
-            raise Http404  # prevent users from accessing records they do not own
+            raise Http404(
+                'You do not have permission to access this record')  # prevent users from accessing records they do not own
         return obj
 
     def form_valid(self, form):
@@ -275,8 +279,46 @@ class DrugDeleteView(BaseDeleteView):
     success_message = "Drug was deleted successfully"
     success_url = reverse_lazy('ct_helper:drugs')
 
+
 # -------------------------------------------------------------
 # Test views:
+class TestCreateView(BaseCreateView):
+    model = Test
+    success_message = 'New tests added successfully'
+    success_url = reverse_lazy('ct_helper:drugs')
+    form_class = TestForm
+
+
+class TestUpdateView(BaseUpdateView):
+    model = Test
+    success_message = 'Tests updated successfully'
+    success_url = reverse_lazy('ct_helper:drugs')
+    form_class = TestForm
+
+
+class TestDeleteView(BaseDeleteView):
+    model = Test
+    success_message = "Tests was deleted successfully"
+    success_url = reverse_lazy('ct_helper:drugs')
+
 
 # ------------------------------------------------------------------------
 # Prescription views:
+class PrescriptionCreateView(BaseCreateView):
+    model = Prescription
+    success_message = 'New prescription added successfully'
+    success_url = reverse_lazy('ct_helper:drugs')
+    form_class = PrescriptionForm
+
+
+class PrescriptionUpdateView(BaseUpdateView):
+    model = Prescription
+    success_message = 'Prescription updated successfully'
+    success_url = reverse_lazy('ct_helper:drugs')
+    form_class = PrescriptionForm
+
+
+class PrescriptionDeleteView(BaseDeleteView):
+    model = Prescription
+    success_message = "Prescription was deleted successfully"
+    success_url = reverse_lazy('ct_helper:drugs')

@@ -7,10 +7,26 @@
 <div class="container">
 
     <h3> {{ title }}</h3>
+
     <form method="post">
         {% csrf_token %}
-        {{ form.patient|as_crispy_field }}
 
+      {% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+
+
+        {{ form.patient|as_crispy_field }}
+         {% for error in  form.patient.errors %}
+            <div class="invalid-feedback">
+              {{ error }}
+            </div>
+        {% endfor %}
         {% if  not update %}
             <a href="{% url 'ct_helper:patients_add' %}?next={{ request.path }}" style="padding-bottom:20px;">Add patient</a>
         {% endif %}
@@ -21,6 +37,13 @@
         <div class="form-row">
             <div class="form-group col-md-6 mb-0">
                 {{ form.admission_date|as_crispy_field }}
+                            {{ form.admission_date.errors }}
+
+                  {% for error in  form.admission_date.errors %}
+            <div class="invalid-feedback">
+              {{ error }}
+            </div>
+        {% endfor %}
             </div>
             <div class="form-group col-md-6 mb-0">
                 {{ form.operation_date|as_crispy_field }}

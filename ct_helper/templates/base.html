@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <title>{% block title %}CT Helper{% endblock %}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<style>
+    .mytbl table {
+    table-layout: auto !important;
+}
 
+.mytbl th, .mytbl td, .mytbl thead th, .mytbl tbody td, .mytbl tfoot td, .mytbl tfoot th {
+    width: auto !important;
+}
+</style>
 </head>
 <body>
 {%  block navbar %}

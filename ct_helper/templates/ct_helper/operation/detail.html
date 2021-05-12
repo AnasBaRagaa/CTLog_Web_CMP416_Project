@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Operation{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+    <h3 style="margin: 20px 0px">Operation</h3>
+<table class="table">
+    <tbody>
+
+      <tr>
+        <th scope="row">Patient</th>
+        <td>{{ op.patient.patient_name }}</td>
+         <th scope="row">Hospital</th>
+        <td>{{ op.hospital}}</td>
+      </tr>
+
+     <tr>
+        <th scope="row">Gender</th>
+        <td>{{ op.patient.patient_gender }}</td>
+         <th scope="row">Age</th>
+        <td>{{ op.get_age}}</td>
+      </tr>
+
+
+     <tr>
+        <th scope="row">Admission date</th>
+        <td>{{ op.admission_date.date }}</td>
+         <th scope="row">Operation date</th>
+        <td>{{ op.operation_date.date}}</td>
+           <th scope="row">Discharge date</th>
+        <td>{{ op.discharge_date.date}}</td>
+      </tr>
+
+     <tr>
+        <th scope="row">Pre operation clinical</th>
+      </tr>
+    <tr>
+        <td >{{ op.pre_operation_clinical }}</td>
+      </tr>
+
+    <tr>
+        <th scope="row">Diagnosis</th>
+        <td>{{ op.diagnosis }}</td>
+    </tr>
+
+     <tr>
+        <th scope="row">Operation name</th>
+        <td>{{ op.operation_name }}</td>
+         <th scope="row">Surgeon</th>
+        <td>{{ op.surgeon }}</td>
+    </tr>
+
+       <tr>
+        <th scope="row">Operation details</th>
+      </tr>
+    <tr>
+        <td >{{ op.operation_details }}</td>
+      </tr>
+
+      <tr>
+        <th scope="row">Anesthesia</th>
+        <td>{{ op.anesthesia }}</td>
+    </tr>
+
+       <tr>
+        <th scope="row">Perfusionist</th>
+        <td>{{ op.perfusionist }}</td>
+    </tr>
+
+     <tr>
+        <th scope="row">Post operation clinical</th>
+      </tr>
+    <tr>
+        <td >{{ op.post_operation_clinical }}</td>
+      </tr>
+
+
+    </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

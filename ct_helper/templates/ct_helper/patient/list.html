@@ -35,6 +35,7 @@
                     <th scope="col">Address</th>
                     <th scope="col">Actions</th>
                 </tr>
+                </thead>
                 {% for p in objects %}
                     <tr>
                         <th scope="row">{{ p.patient_name }}</th>
@@ -42,7 +43,7 @@
                         <td>{{ p.patient_phone_number }}</td>
                         <td>{{ p.patient_gender }}</td>
                         <td>{{ p.patient_Nationality }}</td>
-                        <td>{{ p.patient_date_of_birth }} ({{ p.get_age_now }} )</td>
+                        <td>{{ p.patient_date_of_birth.date}} ({{ p.get_age_now }} )</td>
                         <td>{{ p.hospital }}</td>
                         <td>{{ p.file_number }}</td>
                         <td>{{ p.patient_address }}</td>

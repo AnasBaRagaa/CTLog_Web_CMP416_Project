@@ -22,10 +22,10 @@
       <a class="nav-link" href="{% url 'ct_helper:patients' %}">Patients</a>
     </li>
       <li class="nav-item">
-      <a class="nav-link" href="#">Operations</a>
+      <a class="nav-link" href="{% url 'ct_helper:operations' %}">Operations</a>
     </li>
       <li class="nav-item">
-      <a class="nav-link" href="#">Drugs</a>
+      <a class="nav-link" href="{% url 'ct_helper:drugs' %}">Drugs</a>
     </li>
       {% if user.is_authenticated%}
            <li class="nav-item">

@@ -111,9 +111,9 @@ class Operation(models.Model):
     post_operation_clinical = models.CharField(max_length=500, blank=True, null=True)
     discharge_date = models.DateTimeField(blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE,blank=True,null=True) # copy hospital in case patient.hospital changes after the operation
     def __str__(self):
-        return self.operation_name + ',  patient : ' + self.patient.patient_name + ', in :  ' + self.patient.hospital.hospital_name
+        return self.operation_name + ',  patient : ' + self.patient.patient_name + ', in :  ' + self.hospital.hospital_name
 
     def get_age(self):  # to view the patient age at the time of the operation
         op = self.operation_date

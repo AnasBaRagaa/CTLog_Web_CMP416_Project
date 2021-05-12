@@ -2,7 +2,8 @@
 from datetime import datetime
 
 from django import forms
-from django.forms import ModelChoiceField, DateInput
+from django.core.exceptions import ValidationError
+from django.forms import ModelChoiceField, DateInput, CharField
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Hospital, Patient, Surgeon, Drug, Prescription, Test, Operation
@@ -52,11 +53,53 @@ class PatientForm(BaseForm):
     def __init__(self, *args, **kwargs):
         super(PatientForm, self).__init__(*args, **kwargs)
         self.fields['hospital'] = ModelChoiceField(queryset=Hospital.objects.filter(owner=self.user))
-       # self.fields['patient_date_of_birth']= forms.DateField(widget=DateInput(attrs={'max': datetime.now().strftime("%Y-%m-%d"), 'type':'date'}))
+
+    # self.fields['patient_date_of_birth']= forms.DateField(widget=DateInput(attrs={'max': datetime.now().strftime("%Y-%m-%d"), 'type':'date'}))
     class Meta:
         model = Patient
         exclude = ['owner']
         widgets = {
-           'patient_date_of_birth': DateInput(attrs={'max': datetime.now().strftime("%Y-%m-%d"), 'type':'date'})
+            'patient_date_of_birth': DateInput(attrs={'max': datetime.now().strftime("%Y-%m-%d"), 'type': 'date'})
 
         }
+
+
+class OperationForm(BaseForm):
+    def __init__(self, *args, **kwargs):
+        update = False
+        if 'update' in kwargs.keys():
+            update = kwargs.pop('update')
+
+        super(OperationForm, self).__init__(*args, **kwargs)
+        self.fields['surgeon'] = ModelChoiceField(queryset=Surgeon.objects.filter(owner=self.user))
+        if not update:
+            self.fields['patient'] = ModelChoiceField(queryset=Patient.objects.filter(owner=self.user))
+        else:
+            self.fields['patient'] = ModelChoiceField(queryset=Patient.objects.filter(owner=self.user),disabled=True)
+
+    class Meta:
+        model = Operation
+        exclude = ['hospital', 'owner']
+        widgets = {
+            'admission_date': DateInput(attrs={'type': 'date'}),
+            'operation_date': DateInput(attrs={'type': 'date'}),
+            'discharge_date': DateInput(attrs={'type': 'date'}),
+
+        }
+
+    def clean(self):
+        form_data = self.cleaned_data
+        if form_data['admission_date'] > form_data['operation_date']:
+            self._errors['admission'] = ['admission date cannot be after operation date']
+        if form_data['admission_date'] > form_data['discharge_date']:
+            self._errors['admission'] = ['admission date cannot be after discharge date']
+        if form_data['operation_date'] > form_data['discharge_date']:
+            self._errors['operation_date'] = ['operation date cannot be after discharge date']
+        if form_data['patient'].patient_date_of_birth > form_data['admission_date']:
+            self._errors['admission_date'] = ['admission date cannot be before patient DOB']
+
+
+class DrugForm(BaseForm):
+    class Meta:
+        model = Drug
+        exclude = ['owner']

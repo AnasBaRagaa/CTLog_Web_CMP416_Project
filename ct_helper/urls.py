@@ -17,32 +17,42 @@ urlpatterns = [
     # # patients urls
     path('patients/', views.PatientListView.as_view(), name='patients'),
     path('patients/add/', views.PatientCreateView.as_view(extra_context={'title': 'Add Patient'}), name='patients_add'),
-    path('patients/update/<int:pk>/', views.PatientUpdateView.as_view(extra_context={'title': 'Update Patient'}), name='patients_update'),
-    path('patients/delete/<int:pk>/', views.PatientDeleteView.as_view(extra_context={'title': 'Delete Patient'}), name='patients_delete'),
+    path('patients/update/<int:pk>/', views.PatientUpdateView.as_view(extra_context={'title': 'Update Patient'}),
+         name='patients_update'),
+    path('patients/delete/<int:pk>/', views.PatientDeleteView.as_view(extra_context={'title': 'Delete Patient'}),
+         name='patients_delete'),
 
     # # surgeons urls
     path('surgeons/', views.SurgeonListView.as_view(), name='surgeons'),
     path('surgeons/add/', views.SurgeonCreateView.as_view(extra_context={'title': 'Add Surgeon'}), name='surgeons_add'),
-    path('surgeons/update/<int:pk>/', views.SurgeonUpdateView.as_view(extra_context={'title' : 'Update Surgeon'}),name='surgeons_update'),
-    path('surgeons/delete/<int:pk>/', views.SurgeonDeleteView.as_view(extra_context={'title':'Delete Surgeon'}), name='surgeons_delete'),
+    path('surgeons/update/<int:pk>/', views.SurgeonUpdateView.as_view(extra_context={'title': 'Update Surgeon'}),
+         name='surgeons_update'),
+    path('surgeons/delete/<int:pk>/', views.SurgeonDeleteView.as_view(extra_context={'title': 'Delete Surgeon'}),
+         name='surgeons_delete'),
     #
     # # operations urls
-    # path('operations/', views.DetailView.as_view(), name='operations'),
-    # path('operations/add/<int:patient>/', views.DetailView.as_view(), name='operations_add'),
-    # path('operations/update/<int:pk>/', views.DetailView.as_view(), name='operations_update'),
-    # path('operations/delete/<int:pk>/', views.DetailView.as_view(), name='operations_delete'),
-    # path('operations/details/<int:pk>/', views.DetailView.as_view(), name='operations_details'),
+    path('operations/', views.OperationListView.as_view(), name='operations'),
+    path('operations/add/', views.OperationCreateView.as_view(extra_context={'title': 'Add Operation'}),
+         name='operations_add'),
+    path('operations/update/<int:pk>/', views.OperationUpdateView.as_view(extra_context={'title': 'Update Operation','update':True,}),
+         name='operations_update'),
+    path('operations/delete/<int:pk>/', views.OperationDeleteView.as_view(extra_context={'title': 'Delete Operation'}),
+         name='operations_delete'),
+    path('operations/details/<int:pk>/', views.OperationDetailView.as_view(extra_context={'title': ' Operation' }),
+         name='operations_details'),
     #
     # # drugs urls
-    # path('drugs/', views.DetailView.as_view(), name='drugs'),
-    # path('drugs/add/', views.DetailView.as_view(), name='drugs_add'),
-    # path('drugs/update/<int:pk>/', views.DetailView.as_view(), name='drugs_update'),
-    # path('drugs/delete/<int:pk>/', views.DetailView.as_view(), name='drugs_delete'),
-    #
-    # # Prescriptions urls
-    # path('prescriptions/add/<int:operation>/<str:order>/', views.DetailView.as_view(), name='prescriptions_add_order'),
-    # path('prescriptions/update/<int:pk>/', views.DetailView.as_view(), name='prescriptions_update'),
-    # path('prescriptions/delete/<int:pk>/', views.DetailView.as_view(), name='prescriptions_delete'),
+    path('drugs/', views.DrugListView.as_view(), name='drugs'),
+    path('drugs/add/', views.DrugCreateView.as_view(extra_context={'title': 'Add Drug'}), name='drugs_add'),
+    path('drugs/update/<int:pk>/', views.DrugUpdateView.as_view(extra_context={'title': 'Update Drug'}),
+         name='drugs_update'),
+    path('drugs/delete/<int:pk>/', views.DrugDeleteView.as_view(extra_context={'title': 'Delete Drug'}),
+         name='drugs_delete'),
+
+    # # Prescriptions urls path('prescriptions/add/<int:operation>/<str:order>/', views.DetailView.as_view(),
+    # name='prescriptions_add_order'), path('prescriptions/update/<int:pk>/', views.DetailView.as_view(),
+    # name='prescriptions_update'), path('prescriptions/delete/<int:pk>/', views.DetailView.as_view(),
+    # name='prescriptions_delete'),
     #
     # # Tests urls
     # path('tests/add/<int:operation>/<str:order>/', views.DetailView.as_view(), name='tests_add'),

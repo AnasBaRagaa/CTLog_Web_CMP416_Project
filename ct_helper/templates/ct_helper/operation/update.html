@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Update{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h3> {{ title }}</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.patient|as_crispy_field }}
+
+        {% if  not update %}
+            <a href="{% url 'ct_helper:patients_add' %}?next={{ request.path }}" style="padding-bottom:20px;">Add patient</a>
+        {% endif %}
+
+        {{ form.pre_operation_clinical|as_crispy_field }}
+        {{ form.diagnosis|as_crispy_field }}
+
+        <div class="form-row">
+            <div class="form-group col-md-6 mb-0">
+                {{ form.admission_date|as_crispy_field }}
+            </div>
+            <div class="form-group col-md-6 mb-0">
+                {{ form.operation_date|as_crispy_field }}
+            </div>
+        </div>
+
+        {{ form.anesthesia|as_crispy_field }}
+        {{ form.perfusionist|as_crispy_field }}
+        {{ form.operation_name|as_crispy_field }}
+        {{ form.operation_details|as_crispy_field }}
+        <div class="form-row">
+            <div class="form-group col-md-6 mb-0">
+                {{ form.surgeon|as_crispy_field }}
+            </div>
+            <div class="form-group col-md-6 mb-0">
+                {{ form.discharge_date|as_crispy_field }}
+            </div>
+        </div>
+        <a href="{% url 'ct_helper:surgeons_add' %}?next={{ request.path }}" style="padding-bottom:20px;">Add surgeon</a>
+
+        {{ form.post_operation_clinical|as_crispy_field }}
+
+        <div class="form-row">
+
+
+        </div >
+
+        <input type="submit" class="btn btn-primary" value="Save">
+    </form>
+</div>
+{% endblock %}

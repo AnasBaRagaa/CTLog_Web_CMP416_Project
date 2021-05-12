@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 
-from ct_helper.forms import UserForm, HospitalForm, SurgeonForm, PatientForm
+from ct_helper.forms import UserForm, HospitalForm, SurgeonForm, PatientForm, DrugForm, OperationForm
 from .models import Hospital, Patient, Surgeon, Drug, Prescription, Test, Operation
 
 
@@ -50,8 +50,10 @@ class BaseListView(LoginRequiredMixin, generic.ListView):
 
 
 class BaseDetailView(LoginRequiredMixin, generic.DetailView):
+    context_object_name = "object"
+
     def get_object(self, queryset=None):
-        obj = super(BaseDeleteView, self).get_object()
+        obj = super(BaseDetailView, self).get_object()
         if obj.owner != self.request.user:
             raise Http404  # prevent users from deleting records they do not own
         return obj
@@ -96,9 +98,12 @@ class BaseCreateView(LoginRequiredMixin, generic.CreateView):
     success_message = "Record was added successfully."
     template_name = 'ct_helper/update.html'  # Generic template for insert and update
 
+    # def get_form(self, form_class=None):
+
     def get_success_url(self):
-        if (self.request.GET.get('next', '') != ''):
+        if self.request.GET.get('next', '') != '':
             # redirect back to the next page if this request was redirected from another page and has a next parameter
+            self.request.session['data'] = self.request.POST
             return self.request.GET.get('next', '')
         return super(BaseCreateView, self).get_success_url()
 
@@ -197,11 +202,78 @@ class SurgeonDeleteView(BaseDeleteView):
     success_message = "Surgeon was deleted successfully"
     success_url = reverse_lazy('ct_helper:surgeons')
 
+
 # ------------------------------------------------------------
 # Operation views:
 
+
+class OperationCreateView(BaseCreateView):
+    model = Operation
+    success_message = 'New operation added successfully'
+    success_url = reverse_lazy('ct_helper:operations')
+    form_class = OperationForm
+    template_name = "ct_helper/operation/update.html"
+
+    def form_valid(self, form):
+        form.instance.hospital = form.instance.patient.hospital
+        return super(OperationCreateView, self).form_valid(form)
+
+
+class OperationUpdateView(BaseUpdateView):
+    model = Operation
+    success_message = 'Operation updated successfully'
+    success_url = reverse_lazy('ct_helper:operations')
+    form_class = OperationForm
+    template_name = "ct_helper/operation/update.html"
+
+    def get_form_kwargs(self):
+        kwargs = super(OperationUpdateView, self).get_form_kwargs()
+        kwargs.update({'update': True})
+        return kwargs
+
+
+class OperationListView(BaseListView):
+    model = Operation
+    template_name = "ct_helper/operation/list.html"
+
+
+class OperationDeleteView(BaseDeleteView):
+    model = Operation
+    success_message = "Operation was deleted successfully"
+    success_url = reverse_lazy('ct_helper:operations')
+
+
+class OperationDetailView(BaseDetailView):
+    model = Operation
+    context_object_name = "op"
+    template_name = "ct_helper/operation/detail.html"
+
+
 # -----------------------------------------------------------
 # Drug views:
+class DrugCreateView(BaseCreateView):
+    model = Drug
+    success_message = 'New drug added successfully'
+    success_url = reverse_lazy('ct_helper:drugs')
+    form_class = DrugForm
+
+
+class DrugUpdateView(BaseUpdateView):
+    model = Drug
+    success_message = 'Drug updated successfully'
+    success_url = reverse_lazy('ct_helper:drugs')
+    form_class = DrugForm
+
+
+class DrugListView(BaseListView):
+    model = Drug
+    template_name = "ct_helper/drug/list.html"
+
+
+class DrugDeleteView(BaseDeleteView):
+    model = Drug
+    success_message = "Drug was deleted successfully"
+    success_url = reverse_lazy('ct_helper:drugs')
 
 # -------------------------------------------------------------
 # Test views:

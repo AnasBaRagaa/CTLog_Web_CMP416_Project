@@ -29,6 +29,7 @@
                 <th scope="col">Address</th>
                 <th scope="col">Actions </th>
             </tr>
+            </thead>
             {% for s in objects %}
                 <tr>
                     <th scope="row">{{ s.surgeon_name }}</th>
@@ -41,7 +42,6 @@
 
                     </td>
                 </tr>
-                </thead>
             {% endfor %}
         </table>
         </div>

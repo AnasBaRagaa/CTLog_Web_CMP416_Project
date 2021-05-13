@@ -68,13 +68,20 @@ class BaseDeleteView(LoginRequiredMixin, generic.DeleteView):
     def get_object(self, queryset=None):
         obj = super(BaseDeleteView, self).get_object()
         if obj.owner != self.request.user:
-            raise Http404(
-                'You do not have permission to access this record')  # prevent users from deleting records they do not own
+            # prevent users from deleting records they do not own
+            raise Http404('You do not have permission to access this record')
         return obj
 
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, self.success_message)
         return super(BaseDeleteView, self).delete(request, *args, **kwargs)
+
+    def get_success_url(self):
+        if self.request.GET.get('next', '') != '':
+            # redirect back to the next page if this request was redirected from another page and has a next parameter
+            self.request.session['data'] = self.request.POST
+            return self.request.GET.get('next', '')
+        return super(BaseCreateView, self).get_success_url()
 
 
 class BaseUpdateView(LoginRequiredMixin, generic.UpdateView):
@@ -96,6 +103,13 @@ class BaseUpdateView(LoginRequiredMixin, generic.UpdateView):
         kwargs = super(BaseUpdateView, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
+
+    def get_success_url(self):
+        if self.request.GET.get('next', '') != '':
+            # redirect back to the next page if this request was redirected from another page and has a next parameter
+            self.request.session['data'] = self.request.POST
+            return self.request.GET.get('next', '')
+        return super(BaseCreateView, self).get_success_url()
 
 
 class BaseCreateView(LoginRequiredMixin, generic.CreateView):
@@ -285,21 +299,26 @@ class DrugDeleteView(BaseDeleteView):
 class TestCreateView(BaseCreateView):
     model = Test
     success_message = 'New tests added successfully'
-    success_url = reverse_lazy('ct_helper:drugs')
+    success_url = reverse_lazy('ct_helper:operations')
     form_class = TestForm
+
+    def form_valid(self, form):
+        form.instance.operation = Operation.objects.get(pk=self.kwargs['operation'])
+        form.instance.order = self.kwargs['order']
+        return super(TestCreateView, self).form_valid(form)
 
 
 class TestUpdateView(BaseUpdateView):
     model = Test
     success_message = 'Tests updated successfully'
-    success_url = reverse_lazy('ct_helper:drugs')
+    success_url = reverse_lazy('ct_helper:operations')
     form_class = TestForm
 
 
 class TestDeleteView(BaseDeleteView):
     model = Test
     success_message = "Tests was deleted successfully"
-    success_url = reverse_lazy('ct_helper:drugs')
+    success_url = reverse_lazy('ct_helper:operations')
 
 
 # ------------------------------------------------------------------------
@@ -307,18 +326,23 @@ class TestDeleteView(BaseDeleteView):
 class PrescriptionCreateView(BaseCreateView):
     model = Prescription
     success_message = 'New prescription added successfully'
-    success_url = reverse_lazy('ct_helper:drugs')
+    success_url = reverse_lazy('ct_helper:operations')
     form_class = PrescriptionForm
+    template_name = 'ct_helper/prescription/update.html'
+
+    def form_valid(self, form):
+        form.instance.operation = Operation.objects.get(pk=self.kwargs['operation'])
+        return super(PrescriptionCreateView, self).form_valid(form)
 
 
 class PrescriptionUpdateView(BaseUpdateView):
     model = Prescription
     success_message = 'Prescription updated successfully'
-    success_url = reverse_lazy('ct_helper:drugs')
+    success_url = reverse_lazy('ct_helper:operations')
     form_class = PrescriptionForm
-
+    template_name = 'ct_helper/prescription/update.html'
 
 class PrescriptionDeleteView(BaseDeleteView):
     model = Prescription
     success_message = "Prescription was deleted successfully"
-    success_url = reverse_lazy('ct_helper:drugs')
+    success_url = reverse_lazy('ct_helper:operations')

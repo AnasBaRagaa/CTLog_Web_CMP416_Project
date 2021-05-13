@@ -4,10 +4,14 @@
 {% block title %}Operation{% endblock %}
 
 {% block content %}
-
-    <div style="margin: 20px">
-    <h3 style="margin: 20px 0px">Operation</h3>
+    <div>
+    <div style="margin: 20px" >
+    <h3 style="margin: 20px 0px; padding-bottom: 5px; background-color: black; color: aliceblue">Operation</h3>
 <table class="table mytbl">
+    <colgroup>
+        <col style="width:10%">
+        <col style="width:90%">
+    </colgroup>
     <tbody>
 
       <tr>
@@ -95,8 +99,116 @@
     </table>
 
 </div>
-<div>
+<hr>
+    <div class="float-container" STYLE="margin : 10px 2px">
+
+  <div class="float-child">
+    <div >
+        <h5>Pre Operation Tests</h5>
+       {#Pre operation tsts#}
+        {% if op.get_pre_tests %}
+        {% for t in op.get_pre_tests %}
+            <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Test Name</th>
+                <th scope="col">Value</th>
+            </tr>
+             </thead>
+            {% for name, value in t %}
+                <tr>
+                    <th scope="row">{{ name }}</th>
+                    <td>{{ value }}</td>
+
+                </tr>
+
+            {% endfor %}
+                 </table>
+
+             <a class="btn btn-info" href="{% url 'ct_helper:tests_update' pk=t.id %}?next={{ request.path }}" role="button">Update</a>
+
+            <a class="btn btn-danger" href="{% url 'ct_helper:tests_delete' pk=t.id %}?next={{ request.path }}" role="button">Delete</a>
+            {% endfor %}
+            {% else %}
+                        <p>No pre operation tests, add pre operation tests to this operation to show them here</p>
+
+             <a class="btn btn-primary" href="{% url 'ct_helper:tests_add' operation=op.id order='PRE' %}?next={{ request.path }}" role="button">Add</a>
+        {% endif %}
+    </div>
+  </div>
+
+  <div class="float-child">
+    <div >
+        {#Post operation tsts#}
+         <h5>Post Operation Tests</h5>
+
+        {% if op.get_post_tests %}
+        {% for t in op.get_post_tests %}
+            <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Test Name</th>
+                <th scope="col">Value</th>
+            </tr>
+             </thead>
+            {% for name, value in t %}
+                <tr>
+                    <th scope="row">{{ name }}</th>
+                    <td>{{ value }}</td>
+
+                </tr>
+
+            {% endfor %}
+                 </table>
+
+             <a class="btn btn-info" href="{% url 'ct_helper:tests_update' pk=t.id %}?next={{ request.path }}" role="button">Update</a>
+
+            <a class="btn btn-danger" href="{% url 'ct_helper:tests_delete' pk=t.id %}?next={{ request.path }}" role="button">Delete</a>
+            {% endfor %}
+            {% else %}
+            <p>No post operation tests, add post operation tests to this operation to show them here</p>
+             <a class="btn btn-primary" href="{% url 'ct_helper:tests_add' operation=op.id order='POST' %}?next={{ request.path }}" role="button">Add</a>
+        {% endif %}
+    </div>
+  </div>
+
+</div>
 
 
+    <div class="select2-container--below">
+        {#Prescriptions#}
+        <h5>Prescriptions</h5>
+        {% if op.prescription_set.all%}
+            <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Drug</th>
+                <th scope="col">Dose</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Actions </th>
+            </tr>
+            </thead>
+           {% for p in op.prescription_set.all %}
+                <tr>
+                    <th scope="row">{{ p.drug }}</th>
+                    <td>{{p.dose }}</td>
+                    <td>{{p.duration}}</td>
+
+                    <td>
+                        <a class="btn btn-info" href="{% url 'ct_helper:prescriptions_update' pk=p.id %}?next={{ request.path }}" role="button">Update</a>
+                        <a class="btn btn-danger" href="{% url 'ct_helper:surgeons_delete' pk=p.id %}?next={{ request.path }}" role="button">Delete</a>
+
+                    </td>
+                </tr>
+
+            {% endfor %}
+        </table>
+
+            {% else %}
+            <p>No prescriptions, add prescriptions to this operation to show them here</p>
+
+        {% endif %}
+        <a class="btn btn-primary" href="{% url 'ct_helper:prescriptions_add' operation=op.id  %}?next={{ request.path }}" role="button">Add</a>
+    </div>
 </div>
 {% endblock %}

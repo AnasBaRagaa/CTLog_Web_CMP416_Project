@@ -138,10 +138,11 @@ class DrugForm(BaseForm):
 class TestForm(BaseForm):
     class Meta:
         model = Test
-        exclude = ['owner', 'order']
+        exclude = ['owner', 'order', 'operation']
+
 
 
 class PrescriptionForm(BaseForm):
     class Meta:
         model = Prescription
-        exclude = ['owner', 'order']
+        exclude = ['owner', 'operation']

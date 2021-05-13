@@ -89,7 +89,7 @@ class Patient(models.Model):
         ]
 
     def __str__(self):
-        return  self.patient_name + ' ,  ' + self.hospital.hospital_name
+        return self.patient_name + ' ,  ' + self.hospital.hospital_name
 
     def get_age_now(self):  # to view the patient age as part of the patient profile
         today = date.today()
@@ -111,7 +111,9 @@ class Operation(models.Model):
     post_operation_clinical = models.CharField(max_length=500, blank=True, null=True)
     discharge_date = models.DateTimeField(blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE,blank=True,null=True) # copy hospital in case patient.hospital changes after the operation
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, blank=True,
+                                 null=True)  # copy hospital in case patient.hospital changes after the operation
+
     def __str__(self):
         return self.operation_name + ',  patient : ' + self.patient.patient_name + ', in :  ' + self.hospital.hospital_name
 
@@ -119,6 +121,12 @@ class Operation(models.Model):
         op = self.operation_date
         born = self.patient.patient_date_of_birth
         return op.year - born.year - ((op.month, op.day) < (born.month, born.day))
+
+    def get_pre_tests(self):
+        return self.test_set.filter(order='PRE')
+
+    def get_post_tests(self):
+        return self.test_set.filter(order='POST')
 
 
 class Test(models.Model):
@@ -128,37 +136,37 @@ class Test(models.Model):
     hBV = models.CharField(max_length=1, choices=TEST_CHOICES, null=True, blank=True)
     hCV = models.CharField(max_length=1, choices=TEST_CHOICES, null=True, blank=True)
     cRP = models.CharField(max_length=1, choices=TEST_CHOICES, null=True, blank=True)
-    hP = models.DecimalField(decimal_places=2, blank=True, null=True, max_digits=4,
-                             validators=[MaxValueValidator(20.0), MinValueValidator(0.0)])
-    hBA1C = models.DecimalField(decimal_places=2, blank=True, null=True, max_digits=4,
+    hP = models.DecimalField(decimal_places=2, blank=True, null=True, max_digits=4, help_text='0.0 - 20.0',
+                             validators=[MaxValueValidator(20.0), MinValueValidator(0.0)], )
+    hBA1C = models.DecimalField(decimal_places=2, blank=True, null=True, max_digits=4,help_text='0.0 - 20.0',
                                 validators=[MaxValueValidator(20.0), MinValueValidator(0.0)])
-    creatine = models.DecimalField(decimal_places=2, blank=True, null=True, max_digits=4,
+    creatine = models.DecimalField(decimal_places=2, blank=True, null=True, max_digits=4,help_text='0.0 - 30.0',
                                    validators=[MaxValueValidator(30.0), MinValueValidator(0.0)])
-    urea = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,
+    urea = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,help_text='0.0 - 200.0',
                                validators=[MaxValueValidator(200.0), MinValueValidator(0.0)])
-    gFR = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,
+    gFR = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,help_text='0.0 - 200.0',
                               validators=[MaxValueValidator(200.0), MinValueValidator(0.0)])
-    nA = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,
+    nA = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,help_text='0.0 - 200.0',
                              validators=[MaxValueValidator(200.0), MinValueValidator(0.0)])
-    k = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,
+    k = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,help_text='0.0 - 200.0',
                             validators=[MaxValueValidator(200.0), MinValueValidator(0.0)])
-    aLT = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,
+    aLT = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,help_text='0.0 - 300.0',
                               validators=[MaxValueValidator(300.0), MinValueValidator(0.0)])
-    aST = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,
+    aST = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,help_text='0.0 - 300.0',
                               validators=[MaxValueValidator(300.0), MinValueValidator(0.0)])
-    platelt = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,
+    platelt = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,help_text='0.0 - 500.0',
                                   validators=[MaxValueValidator(500.0), MinValueValidator(0.0)])
-    wBC = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,
+    wBC = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=4,help_text='0.0 - 700.0',
                               validators=[MaxValueValidator(700.0), MinValueValidator(0.0)])
-    lDL = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=5,
+    lDL = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=5,help_text='0.0 - 1000.0',
                               validators=[MaxValueValidator(1000.0), MinValueValidator(0.0)])
-    hDL = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=5,
+    hDL = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=5,help_text='0.0 - 1000.0',
                               validators=[MaxValueValidator(1000.0), MinValueValidator(0.0)])
-    tSH = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=5,
+    tSH = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=5,help_text='0.0 - 1000.0',
                               validators=[MaxValueValidator(1000.0), MinValueValidator(0.0)])
-    t3 = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=5,
+    t3 = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=5,help_text='0.0 - 1000.0',
                              validators=[MaxValueValidator(1000.0), MinValueValidator(0.0)])
-    t4 = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=5,
+    t4 = models.DecimalField(decimal_places=1, blank=True, null=True, max_digits=5,help_text='0.0 - 1000.0',
                              validators=[MaxValueValidator(1000.0), MinValueValidator(0.0)])
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -167,6 +175,19 @@ class Test(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['order', 'operation'], name='unique_test_operation'),
         ]
+
+    def __iter__(self):
+        for field_name in self._meta.get_fields():
+            ignore = ['id', 'order', 'operation', 'owner']
+            if field_name.name not in ignore:
+                value = getattr(self, field_name.name, None)
+                yield field_name.name.upper(), value
+
+    def __str__(self):
+
+        if self.order == 'PRE':
+            return 'pre operation tests for ' + str(self.operation)
+        return 'post operation tests for ' + str(self.operation)
 
 
 class Drug(models.Model):
@@ -192,7 +213,7 @@ class Prescription(models.Model):
     One Drug can be assigned to different prescriptions
 
     """
-    order = models.CharField(max_length=4, choices=TIME_CHOICES)
+
     operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
     drug = models.ForeignKey(Drug, on_delete=models.CASCADE)
     dose = models.CharField(max_length=50)

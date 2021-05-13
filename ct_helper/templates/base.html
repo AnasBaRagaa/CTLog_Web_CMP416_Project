@@ -5,12 +5,16 @@
     <title>{% block title %}CT Helper{% endblock %}</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <style>
-    .mytbl table {
-    table-layout: auto !important;
+  .float-container {
+    border: 3px solid #fff;
+    padding: 20px;
 }
 
-.mytbl th, .mytbl td, .mytbl thead th, .mytbl tbody td, .mytbl tfoot td, .mytbl tfoot th {
-    width: auto !important;
+.float-child {
+    width: 50%;
+    float: left;
+    padding: 20px;
+    #border: 2px solid black;
 }
 </style>
 </head>

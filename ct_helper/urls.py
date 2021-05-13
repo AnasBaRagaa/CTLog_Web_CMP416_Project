@@ -51,9 +51,9 @@ urlpatterns = [
          name='drugs_delete'),
 
     # Prescriptions urls
-    path('prescriptions/add/<int:operation>/<str:order>/',
+    path('prescriptions/add/<int:operation>/',
          views.PrescriptionCreateView.as_view(extra_context={'title': 'Add Prescription'}),
-         name='prescriptions_add_order'),
+         name='prescriptions_add'),
     path('prescriptions/update/<int:pk>/', views.PrescriptionUpdateView.as_view(
         extra_context={'title': 'Update Prescription'}),name='prescriptions_update'),
     path('prescriptions/delete/<int:pk>/', views.PrescriptionDeleteView.as_view(
@@ -65,3 +65,4 @@ urlpatterns = [
     path('tests/delete/<int:pk>/', views.TestDeleteView.as_view(extra_context={'title': 'Delete Tests'}), name='tests_delete'),
 
 ]
+

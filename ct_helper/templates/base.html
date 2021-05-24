@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}CT Helper{% endblock %}</title>
@@ -17,6 +18,8 @@
     #border: 2px solid black;
 }
 </style>
+{% block head_add %}
+{% endblock %}
 </head>
 <body>
 {%  block navbar %}
@@ -24,6 +27,11 @@
   <a class="navbar-brand" href="{% url 'ct_helper:index' %}" ></aclass><h3>CT Helper</h3></a>
 >
   <ul class="navbar-nav">
+  {% if user.is_authenticated%}
+           <li class="nav-item">
+      <a class="nav-link" href=" {% url 'ct_helper:index' %}">Welcome {{ user }}</a>
+    </li>
+     {% endif %}
     <li class="nav-item">
       <a class="nav-link" href="{% url 'ct_helper:hospitals' %}">Hospitals</a>
     </li>
@@ -40,9 +48,7 @@
       <a class="nav-link" href="{% url 'ct_helper:drugs' %}">Drugs</a>
     </li>
       {% if user.is_authenticated%}
-           <li class="nav-item">
-      <a class="nav-link" href="#">Welcome {{ user }}</a>
-    </li>
+
       <li class="nav-item">
       <a class="nav-link" href="{% url 'logout' %}">Logout</a>
     </li>

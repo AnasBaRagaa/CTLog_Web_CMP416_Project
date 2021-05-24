@@ -60,7 +60,7 @@ class PatientForm(BaseForm):
         model = Patient
         exclude = ['owner']
         widgets = {
-            'patient_date_of_birth': DateInput(attrs={'max': datetime.now().strftime("%Y-%m-%d"), 'type': 'date'})
+            'patient_date_of_birth': DateInput(attrs={'max': datetime.now().strftime("%Y-%m-%d"), 'type': 'date', 'min':'1920-01-01'})
 
         }
 

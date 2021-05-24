@@ -10,8 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -50,7 +48,7 @@ INSTALLED_APPS = [
     'ct_helper.apps.CtHelperConfig',  # my application
     'django_countries',  # open source package from : https://pypi.org/project/django-countries/
     'widget_tweaks',  # open source package : https://pypi.org/project/django-widget-tweaks/
-    'crispy_forms', # open source package from : https://pypi.org/project/django-crispy-forms/#description
+    'crispy_forms',  # open source package from : https://pypi.org/project/django-crispy-forms/#description
 ]
 
 MIDDLEWARE = [
@@ -118,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_URL='/login/'
+LOGIN_URL = '/login/'
 
 TIME_ZONE = 'Asia/Dubai'
 

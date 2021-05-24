@@ -11,10 +11,6 @@ from ct_helper.forms import UserForm, HospitalForm, SurgeonForm, PatientForm, Dr
 from .models import Hospital, Patient, Surgeon, Drug, Prescription, Test, Operation
 
 
-def index(request):
-    return render(request, template_name='ct_helper/index.html')
-
-
 def profile(request):
     return redirect('ct_helper:index')
 
@@ -42,6 +38,7 @@ def logout_user(request):
 
 class BaseListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'objects'
+    extra_context = {'filter_param': False}
 
     # filter based on the current user
     def get_queryset(self, *args, **kwargs):
@@ -109,7 +106,7 @@ class BaseUpdateView(LoginRequiredMixin, generic.UpdateView):
             # redirect back to the next page if this request was redirected from another page and has a next parameter
             self.request.session['data'] = self.request.POST
             return self.request.GET.get('next', '')
-        return super(BaseCreateView, self).get_success_url()
+        return super(BaseUpdateView, self).get_success_url()
 
 
 class BaseCreateView(LoginRequiredMixin, generic.CreateView):
@@ -137,6 +134,14 @@ class BaseCreateView(LoginRequiredMixin, generic.CreateView):
         form.instance.owner = user
         messages.success(self.request, self.success_message)
         return super(BaseCreateView, self).form_valid(form)
+
+
+# Index----------------------------------------
+
+
+class IndexView(BaseListView):
+    template_name = 'ct_helper/index.html'
+    model = Patient
 
 
 # Hospital views:
@@ -187,6 +192,16 @@ class PatientListView(BaseListView):
     model = Patient
     template_name = "ct_helper/patient/list.html"
 
+    def get_queryset(self, *args, **kwargs):
+        qs = super(BaseListView, self).get_queryset(*args, **kwargs)
+        name = self.request.GET.get('name', '')
+        if (name != ''):
+            qs = qs.filter(patient_name__contains=name)
+            self.extra_context['filter_param'] = name
+        else:
+            self.extra_context['filter_param'] = False
+        return qs
+
 
 class PatientDeleteView(BaseDeleteView):
     model = Patient
@@ -194,6 +209,8 @@ class PatientDeleteView(BaseDeleteView):
     success_url = reverse_lazy('ct_helper:patients')
 
 
+##
+#
 # ------------------------------------------------------
 # Surgeon views:
 class SurgeonCreateView(BaseCreateView):
@@ -213,6 +230,16 @@ class SurgeonUpdateView(BaseUpdateView):
 class SurgeonListView(BaseListView):
     model = Surgeon
     template_name = "ct_helper/surgeon/list.html"
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super(SurgeonListView, self).get_queryset(*args, **kwargs)
+        name = self.request.GET.get('name', '')
+        if (name != ''):
+            qs = qs.filter(surgeon_name__contains=name)
+            self.extra_context['filter_param'] = name
+        else:
+            self.extra_context['filter_param'] = False
+        return qs
 
 
 class SurgeonDeleteView(BaseDeleteView):
@@ -253,7 +280,24 @@ class OperationUpdateView(BaseUpdateView):
 class OperationListView(BaseListView):
     model = Operation
     template_name = "ct_helper/operation/list.html"
+    extra_context = {'filter_param': False, 'filter_type': False}
+    def get_queryset(self, *args, **kwargs):
+        qs = super(OperationListView, self).get_queryset(*args, **kwargs)
+        name = self.request.GET.get('name', '')
+        search_by = self.request.GET.get('search_by', '')
+        if (name != ''):
+            if search_by == 'patient':
+                qs = qs.filter(patient__patient_name__contains=name)
 
+            else:
+                qs = qs.filter(surgeon__surgeon_name__contains=name)
+
+            self.extra_context['filter_param'] = name
+            self.extra_context['filter_type'] = search_by
+        else:
+            self.extra_context['filter_param'] = False
+            self.extra_context['filter_type'] = False
+        return qs
 
 class OperationDeleteView(BaseDeleteView):
     model = Operation
@@ -265,6 +309,9 @@ class OperationDetailView(BaseDetailView):
     model = Operation
     context_object_name = "op"
     template_name = "ct_helper/operation/detail.html"
+
+
+
 
 
 # -----------------------------------------------------------
@@ -286,6 +333,16 @@ class DrugUpdateView(BaseUpdateView):
 class DrugListView(BaseListView):
     model = Drug
     template_name = "ct_helper/drug/list.html"
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super(BaseListView, self).get_queryset(*args, **kwargs)
+        name = self.request.GET.get('name', '')
+        if (name != ''):
+            qs = qs.filter(drug_name__contains=name)
+            self.extra_context['filter_param'] = name
+        else:
+            self.extra_context['filter_param'] = False
+        return qs
 
 
 class DrugDeleteView(BaseDeleteView):
@@ -341,6 +398,7 @@ class PrescriptionUpdateView(BaseUpdateView):
     success_url = reverse_lazy('ct_helper:operations')
     form_class = PrescriptionForm
     template_name = 'ct_helper/prescription/update.html'
+
 
 class PrescriptionDeleteView(BaseDeleteView):
     model = Prescription

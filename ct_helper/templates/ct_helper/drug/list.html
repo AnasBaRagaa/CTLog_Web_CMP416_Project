@@ -16,6 +16,20 @@
      </div>
 </div>
 
+    <div >
+        <form method="get" action="{% url 'ct_helper:drugs' %}">
+            <label  for="input_txt_name"><h5>Search by drug name :</h5> </label>
+            <input type="text" id="input_txt_name" name="name"
+                   placeholder="Enter name to search for" required >
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+        {% if filter_param %}
+            <p>results for name "{{ filter_param }}" </p>
+            <a class="btn btn-secondary" role="button" href="{% url 'ct_helper:drugs' %}"> Clear search</a>
+        {% endif %}
+    </div>
     {% if objects %}
         <div>
             <table class="table">
@@ -40,6 +54,11 @@
                     </tr>
                 {% endfor %}
             </table>
+        </div>
+        {% elif filter_param %}
+        <div>
+            <p>
+            <h3>No drugs with  name "{{ filter_param }}"</h3></p>
         </div>
     {% else %}
         <div>

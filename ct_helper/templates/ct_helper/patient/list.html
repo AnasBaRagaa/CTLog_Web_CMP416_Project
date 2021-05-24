@@ -6,16 +6,29 @@
 {% block content %}
 
     <div class="row">
-     <div class="col">
-           <h3>Patients</h3>
+        <div class="col">
+            <h3>Patients</h3>
 
-     </div>
-     <div class="col text-right">
-           <a class="btn btn-primary" role="button" href="{% url 'ct_helper:patients_add' %}"> Add a patient</a>
+        </div>
+        <div class="col text-right">
+            <a class="btn btn-primary" role="button" href="{% url 'ct_helper:patients_add' %}"> Add a patient</a>
 
-     </div>
-</div>
+        </div>
+    </div>
+    <div >
+        <form method="get" action="{% url 'ct_helper:patients' %}">
+            <label  for="input_txt_name"><h5>Search by patient name :</h5> </label>
+            <input type="text" id="input_txt_name" name="name"
+                   placeholder="Enter name to search for" required >
 
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+        {% if filter_param %}
+            <p>results for name "{{ filter_param }}" </p>
+            <a class="btn btn-secondary" role="button" href="{% url 'ct_helper:patients' %}"> Clear search</a>
+        {% endif %}
+    </div>
     {% if objects %}
         <div>
             <table class="table">
@@ -43,19 +56,25 @@
                         <td>{{ p.patient_phone_number }}</td>
                         <td>{{ p.patient_gender }}</td>
                         <td>{{ p.patient_Nationality }}</td>
-                        <td>{{ p.patient_date_of_birth.date}} ({{ p.get_age_now }} )</td>
+                        <td>{{ p.patient_date_of_birth.date }} ({{ p.get_age_now }} )</td>
                         <td>{{ p.hospital }}</td>
                         <td>{{ p.file_number }}</td>
                         <td>{{ p.patient_address }}</td>
                         <td>
                             <a class="btn btn-info" href="{% url 'ct_helper:patients_update' pk=p.id %}" role="button">Update</a>
 
-                            <a class="btn btn-danger" href="{% url 'ct_helper:patients_delete' pk=p.id %}" role="button">Delete</a>
+                            <a class="btn btn-danger" href="{% url 'ct_helper:patients_delete' pk=p.id %}"
+                               role="button">Delete</a>
 
                         </td>
                     </tr>
                 {% endfor %}
             </table>
+        </div>
+        {% elif filter_param %}
+        <div>
+            <p>
+            <h3>No patients with  name "{{ filter_param }}"</h3></p>
         </div>
     {% else %}
         <div>

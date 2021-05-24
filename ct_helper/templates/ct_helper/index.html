@@ -2,8 +2,63 @@
 {% load crispy_forms_tags %}
 
 {% block title %}{% endblock %}
+{% block head_add %}
+ <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+       google.charts.setOnLoadCallback(drawPiChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Patient ', 'Age'],
+            {% for p in objects %}
+                ['{{ p.patient_name }}',{{ p.get_age_now }}],
+            {% endfor %}
+
+        ]);
+
+        var options = {
+          title: 'Patients by their ages',
+          legend: { position: 'none' },
+        };
+
+        var chart = new google.visualization.Histogram(document.getElementById('chart_div'));
+        chart.draw(data, options);
+
+
+      }
+       function drawPiChart() {
+         var stats=Object()
+        stats['M']=0
+        stats['F']=0
+          {% for p in objects %}
+            ++stats['{{ p.patient_gender }}']
+          {% endfor %}
+        var data = google.visualization.arrayToDataTable([
+          ['Gender', 'count'],
+          ['Females',     stats['F']],
+          ['Males',stats['M']      ],
+
+        ]);
+
+        var options = {
+          title: 'Patients by gender'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));
+
+        chart.draw(data, options);
+      }
+
+    </script>
+{% endblock %}
 
 {% block content %}
+    <h1> Welocme to CT Helper!</h1>
+    <h4> The following graphs show statistical summary of the patients</h4>
 
+
+<div id="chart_div" style="width: 900px; height: 500px; margin-left: 0px; padding-left: 0px;"></div>
+<div id="pie_chart_div" style="width: 900px; height: 500px; margin-left: 0px; padding-left: 0px;"></div>
 
 {% endblock %}

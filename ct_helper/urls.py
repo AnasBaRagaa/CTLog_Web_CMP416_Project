@@ -3,7 +3,7 @@ from . import views
 
 app_name = 'ct_helper'
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.IndexView.as_view(), name='index'),
     #
     # # hospitals urls
     path('hospitals/', views.HospitalListView.as_view(), name='hospitals'),

@@ -6,48 +6,67 @@
 {% block content %}
 
     <div class="row">
-     <div class="col">
-           <h3>Surgeons</h3>
+        <div class="col">
+            <h3>Surgeons</h3>
 
-     </div>
-     <div class="col text-right">
-                   <a class="btn btn-primary " role="button" href="{% url 'ct_helper:surgeons_add' %}"> Add a surgeon</a>
+        </div>
+        <div class="col text-right">
+            <a class="btn btn-primary " role="button" href="{% url 'ct_helper:surgeons_add' %}"> Add a surgeon</a>
 
-     </div>
-</div>
+        </div>
+    </div>
 
+    <div >
+        <form method="get" action="{% url 'ct_helper:surgeons' %}">
+            <label  for="input_txt_name"><h5>Search by surgeon name :</h5> </label>
+            <input type="text" id="input_txt_name" name="name"
+                   placeholder="Enter name to search for" required >
 
+            <button type="submit" class="btn btn-primary">Submit</button>
 
+        </form>
+        {% if filter_param %}
+            <p>results for name "{{ filter_param }}" </p>
+            <a class="btn btn-secondary" role="button" href="{% url 'ct_helper:surgeons' %}"> Clear search</a>
+        {% endif %}
+    </div>
     {% if objects %}
         <div>
-        <table class="table">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">Surgeon name</th>
-                <th scope="col">Email</th>
-                <th scope="col">Phone number</th>
-                <th scope="col">Address</th>
-                <th scope="col">Actions </th>
-            </tr>
-            </thead>
-            {% for s in objects %}
+            <table class="table">
+                <thead class="thead-dark">
                 <tr>
-                    <th scope="row">{{ s.surgeon_name }}</th>
-                    <td>{{ s.surgeon_Email }}</td>
-                    <td>{{s.surgeon_phone_number}}</td>
-                    <td>{{ s.surgeon_address }}</td>
-                    <td>
-                        <a class="btn btn-info" href="{% url 'ct_helper:surgeons_update' pk=s.id %}" role="button">Update</a>
-                        <a class="btn btn-danger" href="{% url 'ct_helper:surgeons_update' pk=s.id %}" role="button">Delete</a>
-
-                    </td>
+                    <th scope="col">Surgeon name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Phone number</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Actions</th>
                 </tr>
-            {% endfor %}
-        </table>
+                </thead>
+                {% for s in objects %}
+                    <tr>
+                        <th scope="row">{{ s.surgeon_name }}</th>
+                        <td>{{ s.surgeon_Email }}</td>
+                        <td>{{ s.surgeon_phone_number }}</td>
+                        <td>{{ s.surgeon_address }}</td>
+                        <td>
+                            <a class="btn btn-info" href="{% url 'ct_helper:surgeons_update' pk=s.id %}" role="button">Update</a>
+                            <a class="btn btn-danger" href="{% url 'ct_helper:surgeons_update' pk=s.id %}"
+                               role="button">Delete</a>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
-        {% else %}
+          {% elif filter_param %}
         <div>
-        <p><h3>No Surgeons yet...</h3></p>
+            <p>
+            <h3>No surgeons with name "{{ filter_param }}"</h3></p>
+        </div>
+    {% else %}
+        <div>
+            <p>
+            <h3>No Surgeons yet...</h3></p>
         </div>
     {% endif %}
 {% endblock %}

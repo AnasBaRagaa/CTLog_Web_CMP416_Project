@@ -196,7 +196,7 @@
 
                     <td>
                         <a class="btn btn-info" href="{% url 'ct_helper:prescriptions_update' pk=p.id %}?next={{ request.path }}" role="button">Update</a>
-                        <a class="btn btn-danger" href="{% url 'ct_helper:surgeons_delete' pk=p.id %}?next={{ request.path }}" role="button">Delete</a>
+                        <a class="btn btn-danger" href="{% url 'ct_helper:prescriptions_delete' pk=p.id %}?next={{ request.path }}" role="button">Delete</a>
 
                     </td>
                 </tr>

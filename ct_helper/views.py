@@ -78,7 +78,7 @@ class BaseDeleteView(LoginRequiredMixin, generic.DeleteView):
             # redirect back to the next page if this request was redirected from another page and has a next parameter
             self.request.session['data'] = self.request.POST
             return self.request.GET.get('next', '')
-        return super(BaseCreateView, self).get_success_url()
+        return super(BaseDeleteView, self).get_success_url()
 
 
 class BaseUpdateView(LoginRequiredMixin, generic.UpdateView):

@@ -50,7 +50,7 @@
                         <td>{{ s.surgeon_address }}</td>
                         <td>
                             <a class="btn btn-info" href="{% url 'ct_helper:surgeons_update' pk=s.id %}" role="button">Update</a>
-                            <a class="btn btn-danger" href="{% url 'ct_helper:surgeons_update' pk=s.id %}"
+                            <a class="btn btn-danger" href="{% url 'ct_helper:surgeons_delete' pk=s.id %}"
                                role="button">Delete</a>
 
                         </td>

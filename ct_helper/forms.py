@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django import forms
 from django.core.exceptions import ValidationError
-from django.forms import ModelChoiceField, DateInput, CharField
+from django.forms import ModelChoiceField, DateInput, CharField, HiddenInput
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -31,36 +31,63 @@ class UserForm(UserCreationForm):
 
 class BaseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+
         if 'user' in kwargs.keys():
             user = kwargs.pop('user')
             self.user = user
+
         else:
             self.user = None
+
+        if 'obj_id' in kwargs.keys():
+            self.object_id = kwargs.pop('obj_id')
+        else:
+            self.object_id = None
+
+        initial = kwargs.get('initial', {})
+        initial['owner'] = self.user.id
+        kwargs['initial'] = initial
+
         super(BaseForm, self).__init__(*args, **kwargs)
 
 
 class SurgeonForm(BaseForm):
+    def __init__(self, *args, **kwargs):
+        super(SurgeonForm, self).__init__(*args, **kwargs)
+        self.fields['owner'].initial = self.user
+        self.fields['owner'].widget = HiddenInput()
+
     class Meta:
         model = Surgeon
-        exclude = ['owner']
+        exclude = []
 
 
 class HospitalForm(BaseForm):
+
+    def __init__(self, *args, **kwargs):
+        super(HospitalForm, self).__init__(*args, **kwargs)
+        self.fields['owner'].initial = self.user
+        self.fields['owner'].widget = HiddenInput()
+
     class Meta:
         model = Hospital
-        exclude = ['owner']
+        exclude = []
 
 
 class PatientForm(BaseForm):
+
     def __init__(self, *args, **kwargs):
         super(PatientForm, self).__init__(*args, **kwargs)
         self.fields['hospital'] = ModelChoiceField(queryset=Hospital.objects.filter(owner=self.user))
+        self.fields['owner'].initial = self.user
+        self.fields['owner'].widget = HiddenInput()
 
     class Meta:
         model = Patient
-        exclude = ['owner']
+        exclude = []
         widgets = {
-            'patient_date_of_birth': DateInput(attrs={'max': datetime.now().strftime("%Y-%m-%d"), 'type': 'date', 'min':'1920-01-01'})
+            'patient_date_of_birth': DateInput(
+                attrs={'max': datetime.now().strftime("%Y-%m-%d"), 'type': 'date', 'min': '1920-01-01'})
 
         }
 
@@ -81,7 +108,8 @@ class OperationForm(BaseForm):
                                                                  required=False)
         self.fields['operation_details'] = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'rows': 3}),
                                                            required=False)
-
+        self.fields['owner'].initial = self.user
+        self.fields['owner'].widget = HiddenInput()
         # self.helper.layout = Layout(
         #     'patient',
         #     'pre_operation_clinical',
@@ -108,7 +136,7 @@ class OperationForm(BaseForm):
 
     class Meta:
         model = Operation
-        exclude = ['hospital', 'owner', ]
+        exclude = ['hospital', ]
         widgets = {
             'admission_date': DateInput(attrs={'type': 'date'}),
             'operation_date': DateInput(attrs={'type': 'date'}),
@@ -130,9 +158,15 @@ class OperationForm(BaseForm):
 
 
 class DrugForm(BaseForm):
+
+    def __init__(self, *args, **kwargs):
+        super(DrugForm, self).__init__(*args, **kwargs)
+        self.fields['owner'].initial = self.user
+        self.fields['owner'].widget = HiddenInput()
+
     class Meta:
         model = Drug
-        exclude = ['owner']
+        exclude = []
 
 
 class TestForm(BaseForm):
@@ -141,13 +175,21 @@ class TestForm(BaseForm):
         exclude = ['owner', 'order', 'operation']
 
 
-
 class PrescriptionForm(BaseForm):
     def __init__(self, *args, **kwargs):
-
+        if 'op' in kwargs.keys():
+            operation = kwargs.pop('op')
+            self.operation = operation
+        else:
+            self.operation = None
         super(PrescriptionForm, self).__init__(*args, **kwargs)
-        self.fields['drug'] = ModelChoiceField(queryset=Drug.objects.filter(owner=self.user))
+        Ids = []
+        if (operation):
+            Ids = [p.drug.id for p in Operation.objects.get(pk=operation).prescription_set.all()]
 
+        self.fields['drug'] = ModelChoiceField(queryset=Drug.objects.filter(owner=self.user).exclude(id__in=Ids))
+        self.fields['owner'].initial = self.user
+        self.fields['owner'].widget = HiddenInput()
     class Meta:
         model = Prescription
-        exclude = ['owner', 'operation']
+        exclude = [ 'operation']

@@ -99,6 +99,8 @@ class BaseUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_form_kwargs(self):
         kwargs = super(BaseUpdateView, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
+        kwargs.update({'obj_id': self.get_object().id})
+
         return kwargs
 
     def get_success_url(self):
@@ -281,6 +283,7 @@ class OperationListView(BaseListView):
     model = Operation
     template_name = "ct_helper/operation/list.html"
     extra_context = {'filter_param': False, 'filter_type': False}
+
     def get_queryset(self, *args, **kwargs):
         qs = super(OperationListView, self).get_queryset(*args, **kwargs)
         name = self.request.GET.get('name', '')
@@ -299,6 +302,7 @@ class OperationListView(BaseListView):
             self.extra_context['filter_type'] = False
         return qs
 
+
 class OperationDeleteView(BaseDeleteView):
     model = Operation
     success_message = "Operation was deleted successfully"
@@ -309,9 +313,6 @@ class OperationDetailView(BaseDetailView):
     model = Operation
     context_object_name = "op"
     template_name = "ct_helper/operation/detail.html"
-
-
-
 
 
 # -----------------------------------------------------------
@@ -390,6 +391,11 @@ class PrescriptionCreateView(BaseCreateView):
     def form_valid(self, form):
         form.instance.operation = Operation.objects.get(pk=self.kwargs['operation'])
         return super(PrescriptionCreateView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(PrescriptionCreateView, self).get_form_kwargs()
+        kwargs.update({'op': self.kwargs['operation']})
+        return kwargs
 
 
 class PrescriptionUpdateView(BaseUpdateView):

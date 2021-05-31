@@ -44,6 +44,8 @@ class Surgeon(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['surgeon_name','owner'], name='unique_surgeon_name'),
+            models.UniqueConstraint(fields=['surgeon_Email', 'owner'], name='unique_surgeon_Email'),
+            models.UniqueConstraint(fields=['surgeon_phone_number', 'owner'], name='unique_surgeon_phone_number'),
         ]
 
     def __str__(self):
@@ -61,6 +63,8 @@ class Hospital(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['hospital_name','owner'], name='unique_hospital_name'),
+            models.UniqueConstraint(fields=['hospital_website', 'owner'], name='unique_hospital_website'),
+            models.UniqueConstraint(fields=['hospital_phone_number', 'owner'], name='unique_hospital_phone_number'),
         ]
 
     def __str__(self):

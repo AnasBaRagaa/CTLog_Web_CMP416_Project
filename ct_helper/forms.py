@@ -143,6 +143,11 @@ class TestForm(BaseForm):
 
 
 class PrescriptionForm(BaseForm):
+    def __init__(self, *args, **kwargs):
+
+        super(PrescriptionForm, self).__init__(*args, **kwargs)
+        self.fields['drug'] = ModelChoiceField(queryset=Drug.objects.filter(owner=self.user))
+
     class Meta:
         model = Prescription
         exclude = ['owner', 'operation']

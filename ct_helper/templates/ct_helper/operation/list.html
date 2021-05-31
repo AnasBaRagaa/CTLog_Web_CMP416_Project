@@ -2,7 +2,9 @@
 {% load crispy_forms_tags %}
 
 {% block title %}Surgeons{% endblock %}
+{% block head_add %}
 
+{% endblock %}
 {% block content %}
 
     <div class="row">
@@ -17,7 +19,7 @@
  <div >
         <form method="get" action="{% url 'ct_helper:operations' %}">
 
-             <input  type="radio" name="search_by" id="radios1" value="patient" checked>
+             <input  type="radio" name="search_by" id="radios1" value="patient" checked="True">
             <label  for="radios1"> <h6>Search by patient name</h6></label>
             <input  type="radio" name="search_by" id="radios2" value="surgeon" >
             <label  for="radios2"> <h6>Search by surgeon name</h6></label>
@@ -82,5 +84,18 @@
             <h7>No operations yet...</h7></p>
         </div>
     {% endif %}
+    <script type="text/javascript">
+        {%  if filter_param %}
+        {% if filter_type == 'surgeon' %}
+            var e ="radios2";
+
+        {% else %}
+           var e ="radios1"
+
+        {% endif %}
+          document.getElementById(e).setAttribute('checked','True')
+
+        {% endif %}
+    </script>
 {% endblock %}
 

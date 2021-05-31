@@ -43,7 +43,7 @@ class Surgeon(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['surgeon_name'], name='unique_surgeon_name'),
+            models.UniqueConstraint(fields=['surgeon_name','owner'], name='unique_surgeon_name'),
         ]
 
     def __str__(self):
@@ -60,7 +60,7 @@ class Hospital(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['hospital_name'], name='unique_hospital_name'),
+            models.UniqueConstraint(fields=['hospital_name','owner'], name='unique_hospital_name'),
         ]
 
     def __str__(self):
@@ -83,8 +83,8 @@ class Patient(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['patient_name', 'hospital'], name='unique_patient_hospital'),
-            models.UniqueConstraint(fields=['file_number', 'hospital'], name='unique_file-number_hospital'),
+            models.UniqueConstraint(fields=['patient_name', 'hospital','owner'], name='unique_patient_hospital'),
+            models.UniqueConstraint(fields=['file_number', 'hospital','owner'], name='unique_file-number_hospital'),
 
         ]
 
@@ -197,7 +197,7 @@ class Drug(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['drug_name'], name='unique_drug_name'),
+            models.UniqueConstraint(fields=['drug_name','owner'], name='unique_drug_name'),
         ]
 
     def __str__(self):

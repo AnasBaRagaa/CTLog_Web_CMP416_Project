@@ -193,7 +193,7 @@ class PatientListView(BaseListView):
     template_name = "ct_helper/patient/list.html"
 
     def get_queryset(self, *args, **kwargs):
-        qs = super(BaseListView, self).get_queryset(*args, **kwargs)
+        qs = super(PatientListView, self).get_queryset(*args, **kwargs)
         name = self.request.GET.get('name', '')
         if (name != ''):
             qs = qs.filter(patient_name__contains=name)
@@ -335,7 +335,7 @@ class DrugListView(BaseListView):
     template_name = "ct_helper/drug/list.html"
 
     def get_queryset(self, *args, **kwargs):
-        qs = super(BaseListView, self).get_queryset(*args, **kwargs)
+        qs = super(DrugListView, self).get_queryset(*args, **kwargs)
         name = self.request.GET.get('name', '')
         if (name != ''):
             qs = qs.filter(drug_name__contains=name)

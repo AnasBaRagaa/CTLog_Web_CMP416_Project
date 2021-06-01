@@ -394,7 +394,7 @@ class PrescriptionCreateView(BaseCreateView):
 
     def get_form_kwargs(self):
         kwargs = super(PrescriptionCreateView, self).get_form_kwargs()
-        kwargs.update({'op': self.kwargs['operation']})
+        kwargs.update({'op': Operation.objects.get(pk=self.kwargs['operation'])})
         return kwargs
 
 
@@ -405,6 +405,10 @@ class PrescriptionUpdateView(BaseUpdateView):
     form_class = PrescriptionForm
     template_name = 'ct_helper/prescription/update.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(PrescriptionUpdateView, self).get_form_kwargs()
+        kwargs.update({'op': self.get_object()})
+        return kwargs
 
 class PrescriptionDeleteView(BaseDeleteView):
     model = Prescription

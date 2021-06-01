@@ -179,17 +179,20 @@ class PrescriptionForm(BaseForm):
     def __init__(self, *args, **kwargs):
         if 'op' in kwargs.keys():
             operation = kwargs.pop('op')
-            self.operation = operation
+
         else:
-            self.operation = None
+            operation = None
+        self.operation = operation
         super(PrescriptionForm, self).__init__(*args, **kwargs)
         Ids = []
-        if (operation):
-            Ids = [p.drug.id for p in Operation.objects.get(pk=operation).prescription_set.all()]
+        #if operation:
+         #   Ids = [p.drug.id for p in Operation.objects.get(pk=operation).prescription_set.all()]
 
         self.fields['drug'] = ModelChoiceField(queryset=Drug.objects.filter(owner=self.user).exclude(id__in=Ids))
         self.fields['owner'].initial = self.user
         self.fields['owner'].widget = HiddenInput()
+        self.fields['operation'].initial=self.operation
+        self.fields['operation'].widget = HiddenInput()
     class Meta:
         model = Prescription
-        exclude = [ 'operation']
+        exclude = []
